@@ -8,7 +8,7 @@ local fixed_delta_time = 1/240
 
 function love.load()
   --Generate map
-  map:load("")
+  map:load("yeet")
 end
 
 function love.update(dt)

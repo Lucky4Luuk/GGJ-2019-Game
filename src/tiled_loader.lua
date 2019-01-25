@@ -15,15 +15,16 @@ local max = math.max
 local min = math.min
 local abs = math.abs
 lib.gTileMap_LayerInvisByName = {}
+lib.gTileGfx = {}
 
 function lib.TiledMap_Load (filepath,tilesize,spritepath_removeold,spritepath_prefix)
     spritepath_removeold = spritepath_removeold or "../"
     spritepath_prefix = spritepath_prefix or ""
-    kTileSize = tilesize or kTileSize or 32
-    gTileGfx = {}
+    lib.kTileSize = tilesize or lib.kTileSize or 32
+    lib.gTileGfx = {}
 
-    local tiletype,layers = lib.TiledMap_Parse(filepath)
-    gMapLayers = layers
+    local tiletype, layers = lib.TiledMap_Parse(filepath)
+    lib.gMapLayers = layers
     for first_gid,path in pairs(tiletype) do
         path = spritepath_prefix .. string.gsub(path,"^"..string.gsub(spritepath_removeold,"%.","%%."),"")
         local raw = love.image.newImageData(path)
@@ -34,7 +35,7 @@ function lib.TiledMap_Load (filepath,tilesize,spritepath_removeold,spritepath_pr
           for x=0,floor(w/kTileSize)-1 do
             local sprite = love.image.newImageData(kTileSize,kTileSize)
             sprite:paste(raw,0,0,x*e,y*e,e,e)
-            gTileGfx[gid] = love.graphics.newImage(sprite)
+            lib.gTileGfx[gid] = love.graphics.newImage(sprite)
             gid = gid + 1
           end
         end

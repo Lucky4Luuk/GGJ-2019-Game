@@ -11,6 +11,10 @@ function map:new()
   return setmetatable(m, map_meta)
 end
 
+function map.load(self, path)
+  local tiles, layers = tiled_loader.TiledMap_Parse(path..".tmx")
+end
+
 function map.get_wires(self) --fucking useless like me
   return self.wires
 end
