@@ -1,6 +1,8 @@
 local map = {_TYPE='module', _NAME='map', _VERSION='0.1'}
 local map_meta = {}
 
+local tiled_loader = require("tiled_loader")
+
 function map:new()
   --Make map
   local m = {levels={}, wires={}, type="map"}
