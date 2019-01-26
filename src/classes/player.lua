@@ -44,7 +44,7 @@ function player.update(self, dt)
   self.y = self.y + self.vel_y * dt
   self.vel_x = self.vel_x - self.drag * dt
   self.vel_y = self.vel_y - self.drag * dt
-  if self.grounded==false then self:applyForce(0, 9.8) end
+  if self.grounded == false then self:applyForce(0, 9.8) end
   self.wallRight = false
   self.wallLeft = false
   self.grounded = false
