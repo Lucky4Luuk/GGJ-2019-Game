@@ -5,23 +5,73 @@ local tiled_loader = require("tiled_loader")
 
 function map:new()
   --Make map
-  local m = {levels={}, wires={}, type="map"}
+  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, type="map"}
 
   --Metatable stuff
   return setmetatable(m, map_meta)
 end
 
-function map.load(self, path)
-  local tiles, layers = tiled_loader.TiledMap_Parse(path..".tmx")
+function map.load_tileset(self, data)
+  --local data = tiled_loader.load_json(path)
+  local img = love.graphics.newImage(data.image)
+  self.tileimages[data.image] = img
+  local img_w = data.imagewidth
+  local img_h = data.imageheight
+  local spacing = data.spacing
+  local tile_w = data.tilewidth
+  local tile_h = data.tileheight
+  --local id = data.firstgid
+  --for i=0,img_w,tile_w+spacing do
+  --  for j=0,img_w,tile_h+spacing do
+  --    local cur_tile = love.graphics.newQuad(i,j, tile_w,tile_h, img_w, img_h)
+  --    self.tiles[id] = {source=data.image, quad=cur_tile}
+  --    id = id + 1
+  --  end
+  --end
+  for i=0, (img_w / tile_w) * (img_h / tile_h) do
+    local x = i%(img_w/tile_w)*tile_w
+    local y = math.floor(i/(img_h/tile_h))*tile_h
+    local cur_tile = love.graphics.newQuad(x,y, tile_w,tile_h, img_w, img_h)
+    self.tiles[data.firstgid + i] = {source=data.image, quad=cur_tile, w=tile_w, h=tile_h}
+  end
+  --local tileset = {img=img, tiles=tiles}
+  --self.tilesets[data.name] = tileset
 end
 
-function map.get_wires(self) --fucking useless like me
-  return self.wires
-end
-
-function map.add_wire(self, to, from)
-  --return setmetatable(map_result, map_meta)
-  table.insert(self.wires, {to=to, from=from})
+function map.load_map(self, path)
+  --local data = tiled_loader.load_json("assets/"..path..".json")
+  local data = require("assets."..path)
+  self.canvas = love.graphics.newCanvas(data.width * data.tilewidth, data.height * data.tileheight)
+  for i=1, #data.tilesets do
+    local cur_ts = data.tilesets[i]
+    self:load_tileset(cur_ts)
+  end
+  for l=1, #data.layers do
+    local hasCol = true
+    if data.layers[l].name == "NoCollision" then
+      hasCol = false
+    end
+    local tiles = data.layers[l].data
+    love.graphics.push()
+    love.graphics.setCanvas(self.canvas)
+    for i=1, #tiles do
+      if tiles[i] > 0 then
+        local cur_tile = self.tiles[tiles[i]]
+        local x = (i%data.layers[l].height - 1)*cur_tile.h
+        local y = math.floor(i/data.layers[l].width)*cur_tile.w
+        love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
+        if hasCol then
+          table.insert(self.colliders, {x=x+cur_tile.w/2,y=y+cur_tile.h/2, w=cur_tile.w/2, h=cur_tile.h/2})
+        end
+      end
+    end
+    --for i=1, #self.tiles do
+    --  local cur_tile = self.tiles[i]
+    --  love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, math.floor(i/32)*32, (i%33)*32)
+    --end
+    love.graphics.setCanvas()
+    love.graphics.pop()
+  end
 end
 
 setmetatable( map, { __call = function( ... ) return map.new( ... ) end } )

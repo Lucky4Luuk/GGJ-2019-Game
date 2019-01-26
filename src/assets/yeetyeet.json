@@ -1,0 +1,14 @@
+{ "columns":32,
+ "image":"assets/3UB4n80.jpg",
+ "imageheight":1024,
+ "imagewidth":1024,
+ "margin":0,
+ "name":"yeetyeet",
+ "spacing":0,
+ "tilecount":1024,
+ "tiledversion":"1.2.1",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":1.2
+}
