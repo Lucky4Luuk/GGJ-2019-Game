@@ -28,12 +28,41 @@ function player:new(x,y)
 end
 
 function player.enter_tube(self, tube)
-  self.body:setX(tube.x + 16)
-  self.body:setY(tube.y + 16)
-  self.inTube = true
+  if tube.x and tube.y then
+    self.body:setX(tube.x + 16)
+    self.body:setY(tube.y + 16)
+    self.inTube = true
+    self.prev_tube = self.tube
+    self.tube = tube
+  else
+    --Reached the end lol
+    --shitty code ftw
+    print(self.prev_tube.id)
+    if self.prev_tube.id == 82 then
+      self.body:setX(self.body:getX() + 32)
+      self.inTube = false
+      self.prev_tube = nil
+      self.tube = nil
+    elseif self.prev_tube.id == 98 then
+      self.body:setX(self.body:getX() - 32)
+      self.inTube = false
+      self.prev_tube = nil
+      self.tube = nil
+    elseif self.prev_tube.id == 81 then
+      self.body:setY(self.body:getY() - 32)
+      self.inTube = false
+      self.prev_tube = nil
+      self.tube = nil
+    elseif self.prev_tube.id == 97 then
+      self.body:setY(self.body:getY() + 32)
+      self.inTube = false
+      self.prev_tube = nil
+      self.tube = nil
+    end
+  end
 end
 
-function player.update(self, dt)
+function player.update(self, dt, map)
   local vx, vy = self.body:getLinearVelocity()
   self.body:setLinearVelocity(vx*0.95, vy)
   if not (love.keyboard.isDown("a") or love.keyboard.isDown("d")) then
@@ -45,6 +74,12 @@ function player.update(self, dt)
   elseif self.anim == "walking" then
     self.frame_counter = self.frame_counter + dt * self.sprites.walking_speed
     self.frame_counter = self.frame_counter % #self.sprites.walking
+  end
+
+  if self.inTube then
+    if self.tube.child then
+      self:enter_tube(self.tube.child)
+    end
   end
   --[[
   self.x = self.x + self.vel_x * dt
@@ -71,8 +106,9 @@ function player.moveRight(self, dt, map)
     if vx == 0 then
       for i=1, #map.tubes do
         local tube = map.tubes[i]
-        --print(math.abs(self.body:getX() - tube.x))
-        if math.abs(self.body:getX() - tube.x) < 8.0 then
+        local distX = math.abs(self.body:getX() - tube.x)
+        local distY = math.abs(self.body:getY() - tube.y)
+        if distX < 16.0 and distY < 32.0 and tube.x > self.body:getX() then
           --print("yeet")
           self:enter_tube(tube)
         end
@@ -82,10 +118,26 @@ function player.moveRight(self, dt, map)
 end
 
 function player.moveLeft(self, dt, map)
-  if self.wallLeft == false then
+  if self.inTube == false then
     self.body:applyForce(-self.speed * dt * 20, 0)
     self.movingRight = false
-    self.anim = "walking"
+    if not self.grounded then
+      self.anim = "walking"
+    end
+
+    local vx, vy = self.body:getLinearVelocity()
+    if vx == 0 then
+      for i=1, #map.tubes do
+        local tube = map.tubes[i]
+        local distX = math.abs(self.body:getX() - tube.x)
+        local distY = math.abs(self.body:getY() - tube.y)
+        print(distX, distY)
+        if distX < 64.0 and distY < 32.0 and tube.x < self.body:getX() then
+          --print("yeet")
+          self:enter_tube(tube)
+        end
+      end
+    end
   end
 end
 

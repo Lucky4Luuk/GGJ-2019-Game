@@ -32,7 +32,44 @@ function map.load_tileset(self, data)
 end
 
 function isPipe(id)
-  return left == 66 or left == 67 or left == 80 or left == 81 or left == 82 or left == 83 or left == 96 or left == 97 or left == 98 or left == 99
+  return id == 67 or id == 68 or id == 81 or id == 82 or id == 83 or id == 84 or id == 97 or id == 98 or id == 99 or id == 100
+end
+
+function map.pipeFindChild(self, i, w,h, cw,ch, prev_dir, prev_id, id)
+  if i == prev_id then
+    return {id=id}
+  end
+  local left = self.tubeTiles[i-1]
+  local right = self.tubeTiles[i+1]
+  local up = self.tubeTiles[i-w]
+  local down = self.tubeTiles[i+w]
+  local dir = ""
+  local type = 0
+  if isPipe(left) and prev_dir ~= "right" then
+    child_id = i-1
+    dir = "left"
+    type = left
+  elseif isPipe(right) and prev_dir ~= "left" then
+    child_id = i+1
+    dir = "right"
+    type = right
+  elseif isPipe(up) and prev_dir ~= "down" then
+    child_id = i-w
+    dir = "up"
+    type = up
+  elseif isPipe(down) and prev_dir ~= "up" then
+    child_id = i+w
+    dir = "down"
+    type = down
+  end
+  local x = (i%h - 1)*ch
+  local y = math.floor(i/w)*cw
+  local tube = {x=x, y=y, id=type}
+  if child_id then
+    --print(child_id)
+    tube.child = self:pipeFindChild(child_id, w,h, cw,ch, dir, i, type)
+  end
+  return tube
 end
 
 function map.load_map(self, path)
@@ -68,20 +105,7 @@ function map.load_map(self, path)
         local x = (i%data.layers[l].height - 1)*cur_tile.h
         local y = math.floor(i/data.layers[l].width)*cur_tile.w
         if isTubeEntrance then
-          local tube = {x=x, y=y}
-          local left = self.tubeTiles[i-1]
-          local right = self.tubeTiles[i+1]
-          local up = self.tubeTiles[i-data.layers[l].width]
-          local down = self.tubeTiles[i+data.layers[l].height]
-          if isPipe(left) then
-            tube.child = left
-          elseif isPipe(right) then
-            tube.child = right
-          elseif isPipe(up) then
-            tube.child = up
-          elseif isPipe(down) then
-            tube.child = down
-          end
+          local tube = self:pipeFindChild(i, data.layers[l].width, data.layers[l].height, cur_tile.w, cur_tile.h, tiles[i], 0)
           table.insert(self.tubes, tube)
         else
           love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)

@@ -52,7 +52,7 @@ function fixed_update()
       p:jump(fixed_delta_time)
     end
 
-    p:update(fixed_delta_time)
+    p:update(fixed_delta_time, m)
   elseif state == "jarno" then
     --beun je update code hier neer
   end
