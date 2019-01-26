@@ -61,10 +61,14 @@ function map.load_map(self, path)
         local y = math.floor(i/data.layers[l].width)*cur_tile.w
         love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
         if hasCol then
-          for i=1, #tiles do
-            
-          end
-          table.insert(self.colliders, {x=x+cur_tile.w/2,y=y+cur_tile.h/2, w=cur_tile.w/2, h=cur_tile.h/2})
+          --table.insert(self.colliders, {x=x+cur_tile.w,y=y+cur_tile.h/2, w=1, h=cur_tile.h/2, nx=-1, ny=0})
+          --table.insert(self.colliders, {x=x,y=y+cur_tile.h, w=1, h=cur_tile.h/2, nx=1, ny=0})
+          --table.insert(self.colliders, {x=x,y=y+cur_tile.h, w=cur_tile.w, h=1, nx=0, ny=-1})
+          --table.insert(self.colliders, {x=x,y=y, w=cur_tile.w, h=1, nx=0, ny=1})
+          local body = love.physics.newBody(world, x+cur_tile.w/2, y+cur_tile.h/2, "static")
+          local shape = love.physics.newRectangleShape(cur_tile.w, cur_tile.h)
+          local fixture = love.physics.newFixture(body, shape, 1)
+          table.insert(self.colliders, {body=body, shape=shape, fixture=fixture})
         end
       end
     end
