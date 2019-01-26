@@ -61,6 +61,9 @@ function map.load_map(self, path)
         local y = math.floor(i/data.layers[l].width)*cur_tile.w
         love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
         if hasCol then
+          for i=1, #tiles do
+            
+          end
           table.insert(self.colliders, {x=x+cur_tile.w/2,y=y+cur_tile.h/2, w=cur_tile.w/2, h=cur_tile.h/2})
         end
       end
