@@ -6,6 +6,8 @@ world = love.physics.newWorld(0, 15*32, true)
 
 local state = "platforming"
 
+love.graphics.setDefaultFilter("nearest", "nearest", 0)
+
 local m = map:new()
 local p = player:new(48, 112)
 
@@ -21,8 +23,13 @@ function love.load()
   m:load_map("512x512")
 end
 
+function lerp(a,b,t)
+  return a + t * (b - a)
+end
+
 function love.update(dt)
-  cam.pos.x = p.body:getX() - love.graphics.getWidth()/4
+  --cam.pos.x = p.body:getX() - love.graphics.getWidth()/4
+  cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 3.0), 0)
   total_time = total_time + dt
   while total_time > fixed_delta_time do
     fixed_update()

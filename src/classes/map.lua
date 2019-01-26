@@ -13,7 +13,7 @@ end
 
 function map.load_tileset(self, data)
   --local data = tiled_loader.load_json(path)
-  local img = love.graphics.newImage(data.image)
+  local img = love.graphics.newImage("assets/"..data.image)
   self.tileimages[data.image] = img
   local img_w = data.imagewidth
   local img_h = data.imageheight
