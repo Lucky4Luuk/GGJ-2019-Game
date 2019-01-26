@@ -23,6 +23,10 @@ function player:new(x,y)
     table.insert(p.sprites.idle, quad)
   end
 
+  p.sprites.in_pipe = love.graphics.newImage("assets/boop_pipe.png")
+
+  p.pipe_timer = 0
+
   --Metatable stuff
   return setmetatable(p, player_meta)
 end
@@ -62,6 +66,10 @@ function player.enter_tube(self, tube)
   end
 end
 
+function lerp(a,b,t)
+  return a + t * (b - a)
+end
+
 function player.update(self, dt, map)
   local vx, vy = self.body:getLinearVelocity()
   self.body:setLinearVelocity(vx*0.95, vy)
@@ -77,9 +85,15 @@ function player.update(self, dt, map)
   end
 
   if self.inTube then
-    if self.tube.child then
-      self:enter_tube(self.tube.child)
+    if self.pipe_timer > 0.01 then
+      if self.tube.child then
+        self:enter_tube(self.tube.child)
+      end
+      self.pipe_timer = self.pipe_timer - 0.01
     end
+    self.pipe_timer = self.pipe_timer + dt
+  else
+    self.pipe_timer = 0
   end
 
   for i=1, #map.spikes do
@@ -87,17 +101,6 @@ function player.update(self, dt, map)
       self.isDead = true
     end
   end
-  --[[
-  self.x = self.x + self.vel_x * dt
-  self.y = self.y + self.vel_y * dt
-  self.vel_x = self.vel_x - self.drag * dt
-  self.vel_y = self.vel_y - self.drag * dt
-  if self.grounded == false then self:applyForce(0, 9.8) end
-  if self.grounded then self.vel_x = self.vel_x * 0.05 end
-  self.wallRight = false
-  self.wallLeft = false
-  self.grounded = false
-  ]]--
 end
 
 function player.moveRight(self, dt, map)
@@ -149,15 +152,10 @@ function player.jump(self, dt)
 end
 
 function player.draw(self)
-  --TODO: Add sprite + animation support here
-  --love.graphics.setColor(1,0,0,1)
-  --love.graphics.rectangle("fill", self.body:getX()-self.w, self.body:getY()-self.h, self.w*2, self.h*2)
-  --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-  --love.graphics.setColor(0,1,0,1)
-  --love.graphics.points(self.body:getX(), self.body:getY())
-  --love.graphics.line(self.body:getX()-self.w, self.body:getY()+self.h, self.body:getX()+self.w, self.body:getY()+self.h)
   love.graphics.setColor(1,1,1,1)
-  if self.anim == "idle" then
+  if self.inTube then
+    love.graphics.draw(self.sprites.in_pipe, self.body:getX() - 7, self.body:getY() - 20)
+  elseif self.anim == "idle" then
     love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "walking" then
     love.graphics.draw(self.sprites.walking_source, self.sprites.walking[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
