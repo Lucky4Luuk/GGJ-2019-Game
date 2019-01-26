@@ -81,6 +81,12 @@ function player.update(self, dt, map)
       self:enter_tube(self.tube.child)
     end
   end
+
+  for i=1, #map.spikes do
+    if self.body:isTouching(map.spikes[i].body) and self.body:getY() < map.spikes[i].body:getY() then
+      self.isDead = true
+    end
+  end
   --[[
   self.x = self.x + self.vel_x * dt
   self.y = self.y + self.vel_y * dt
@@ -106,13 +112,6 @@ function player.moveRight(self, dt, map)
     if vx == 0 then
       for i=1, #map.tubes do
         local tube = map.tubes[i]
-        --local distX = math.abs(self.body:getX() - tube.x)
-        --local distY = math.abs(self.body:getY() - tube.y)
-        --print(distX, distY)
-        --if distX < 16.0 and distY < 32.0 and tube.x > self.body:getX() then
-        --  --print("yeet")
-        --  self:enter_tube(tube)
-        --end
         if self.body:isTouching(tube.body) and tube.x > self.body:getX() then
           self:enter_tube(tube)
         end
@@ -133,11 +132,7 @@ function player.moveLeft(self, dt, map)
     if vx == 0 then
       for i=1, #map.tubes do
         local tube = map.tubes[i]
-        local distX = math.abs(self.body:getX() - tube.x)
-        local distY = math.abs(self.body:getY() - tube.y)
-        print(distX, distY)
-        if distX < 64.0 and distY < 32.0 and tube.x < self.body:getX() then
-          --print("yeet")
+        if self.body:isTouching(tube.body) and tube.x < self.body:getX() then
           self:enter_tube(tube)
         end
       end

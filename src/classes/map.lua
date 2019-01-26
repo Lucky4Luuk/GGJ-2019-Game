@@ -5,7 +5,7 @@ local tiled_loader = require("tiled_loader")
 
 function map:new()
   --Make map
-  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, type="map"}
+  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, spikes={}, type="map"}
 
   --Metatable stuff
   return setmetatable(m, map_meta)
@@ -82,9 +82,10 @@ function map.load_map(self, path)
   end
   for l=1, #data.layers do
     local hasCol = true
+    local isSpikes = false
     local isTubeEntrance = false
     local tubeLayerIndex = -1
-    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" then
       hasCol = false
     end
     if data.layers[l].name == "TubeEntrance" then
@@ -95,6 +96,9 @@ function map.load_map(self, path)
         end
       end
       self.tubeTiles = data.layers[tubeLayerIndex].data
+    end
+    if data.layers[l].name == "Spikes" then
+      isSpikes = true
     end
     local tiles = data.layers[l].data
     love.graphics.push()
@@ -125,6 +129,11 @@ function map.load_map(self, path)
             local shape = love.physics.newRectangleShape(cur_tile.w, cur_tile.h)
             local fixture = love.physics.newFixture(body, shape, 1)
             table.insert(self.colliders, {body=body, shape=shape, fixture=fixture})
+          elseif isSpikes then
+            local body = love.physics.newBody(world, x+cur_tile.w/2, y+cur_tile.h/2, "static")
+            local shape = love.physics.newRectangleShape(cur_tile.w, cur_tile.h)
+            local fixture = love.physics.newFixture(body, shape, 1)
+            table.insert(self.spikes, {body=body, shape=shape, fixture=fixture})
           end
         end
       end
