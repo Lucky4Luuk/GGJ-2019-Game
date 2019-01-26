@@ -108,6 +108,7 @@ function player.moveRight(self, dt, map)
         local tube = map.tubes[i]
         local distX = math.abs(self.body:getX() - tube.x)
         local distY = math.abs(self.body:getY() - tube.y)
+        print(distX, distY)
         if distX < 16.0 and distY < 32.0 and tube.x > self.body:getX() then
           --print("yeet")
           self:enter_tube(tube)

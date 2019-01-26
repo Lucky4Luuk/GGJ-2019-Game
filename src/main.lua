@@ -20,7 +20,7 @@ local fixed_delta_time = 1/60
 function love.load()
   --Generate map
   --map:load_tileset("yeetyeet")
-  m:load_map("GameJam_Map3_try_out")
+  m:load_map("yaesteas")
 end
 
 function lerp(a,b,t)

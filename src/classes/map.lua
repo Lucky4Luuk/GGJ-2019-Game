@@ -105,6 +105,7 @@ function map.load_map(self, path)
         local x = (i%data.layers[l].height - 1)*cur_tile.h
         local y = math.floor(i/data.layers[l].width)*cur_tile.w
         if isTubeEntrance then
+          print(tiles[i])
           local tube = self:pipeFindChild(i, data.layers[l].width, data.layers[l].height, cur_tile.w, cur_tile.h, tiles[i], 0)
           table.insert(self.tubes, tube)
         else
