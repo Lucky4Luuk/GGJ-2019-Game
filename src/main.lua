@@ -15,7 +15,7 @@ local cam = {pos = {x = 0, y = 0}}
 
 --Timer
 local total_time = 0
-local fixed_delta_time = 1/240
+local fixed_delta_time = 1/60
 
 function love.load()
   --Generate map

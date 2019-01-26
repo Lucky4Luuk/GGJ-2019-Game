@@ -9,11 +9,11 @@ function player:new(x,y)
   body:setFixedRotation(true)
   local shape = love.physics.newRectangleShape(-5, 0, 10, 20)
   local fixture = love.physics.newFixture(body, shape, 1)
-  local p = {w=5, h=10, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=12000, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil}, frame_counter=0, anim="idle", movingRight}
+  local p = {w=5, h=10, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=12000, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
 
   p.sprites.walking_source = love.graphics.newImage("assets/bit_walking.png")
   for i=0, 7 do
-    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 256, 32)
+    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 320, 32)
     table.insert(p.sprites.walking, quad)
   end
 
@@ -30,10 +30,14 @@ end
 function player.update(self, dt)
   local vx, vy = self.body:getLinearVelocity()
   self.body:setLinearVelocity(vx*0.95, vy)
-  self.frame_counter = self.frame_counter + dt
+  if not (love.keyboard.isDown("a") or love.keyboard.isDown("d")) then
+    self.anim = "idle"
+  end
   if self.anim == "idle" then
+    self.frame_counter = self.frame_counter + dt * self.sprites.idle_speed
     self.frame_counter = self.frame_counter % #self.sprites.idle
   elseif self.anim == "walking" then
+    self.frame_counter = self.frame_counter + dt * self.sprites.walking_speed
     self.frame_counter = self.frame_counter % #self.sprites.walking
   end
   --[[
@@ -51,22 +55,26 @@ end
 
 function player.moveRight(self, dt)
   if self.wallRight == false then
-    self.body:applyForce(self.speed, 0)
+    self.body:applyForce(self.speed * dt * 20, 0)
     self.movingRight = true
+    if not self.grounded then
+      self.anim = "walking"
+    end
   end
 end
 
 function player.moveLeft(self, dt)
   if self.wallLeft == false then
-    self.body:applyForce(-self.speed, 0)
+    self.body:applyForce(-self.speed * dt * 20, 0)
     self.movingRight = false
+    self.anim = "walking"
   end
 end
 
 function player.jump(self, dt)
   local vx, vy = self.body:getLinearVelocity()
   if vy == 0 then
-    self.body:applyForce(0, -self.jumpForce)
+    self.body:applyForce(0, -self.jumpForce * dt * 15)
     self.grounded = false
   end
 end
@@ -81,9 +89,9 @@ function player.draw(self)
   --love.graphics.line(self.body:getX()-self.w, self.body:getY()+self.h, self.body:getX()+self.w, self.body:getY()+self.h)
   love.graphics.setColor(1,1,1,1)
   if self.anim == "idle" then
-    love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 16, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
+    love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "walking" then
-    love.graphics.draw(self.sprites.walking_source, self.sprites.walking[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 16, 0, self.movingRight and 1 or 0, 1, 16, 0, 0, 0)
+    love.graphics.draw(self.sprites.walking_source, self.sprites.walking[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   end
 end
 
