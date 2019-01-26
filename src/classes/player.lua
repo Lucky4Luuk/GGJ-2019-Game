@@ -66,6 +66,10 @@ function player.enter_tube(self, tube)
   end
 end
 
+function lerp(a,b,t)
+  return a + t * (b - a)
+end
+
 function player.update(self, dt, map)
   local vx, vy = self.body:getLinearVelocity()
   self.body:setLinearVelocity(vx*0.95, vy)
@@ -81,11 +85,11 @@ function player.update(self, dt, map)
   end
 
   if self.inTube then
-    if self.pipe_timer > 0.05 then
+    if self.pipe_timer > 0.01 then
       if self.tube.child then
         self:enter_tube(self.tube.child)
       end
-      self.pipe_timer = self.pipe_timer - 0.05
+      self.pipe_timer = self.pipe_timer - 0.01
     end
     self.pipe_timer = self.pipe_timer + dt
   else
@@ -159,16 +163,9 @@ function player.jump(self, dt)
 end
 
 function player.draw(self)
-  --TODO: Add sprite + animation support here
-  --love.graphics.setColor(1,0,0,1)
-  --love.graphics.rectangle("fill", self.body:getX()-self.w, self.body:getY()-self.h, self.w*2, self.h*2)
-  --love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
-  --love.graphics.setColor(0,1,0,1)
-  --love.graphics.points(self.body:getX(), self.body:getY())
-  --love.graphics.line(self.body:getX()-self.w, self.body:getY()+self.h, self.body:getX()+self.w, self.body:getY()+self.h)
   love.graphics.setColor(1,1,1,1)
   if self.inTube then
-    love.graphics.draw(self.sprites.in_pipe, self.body:getX() - 7, self.body:getY() - 24)
+    love.graphics.draw(self.sprites.in_pipe, self.body:getX() - 7, self.body:getY() - 20)
   elseif self.anim == "idle" then
     love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "walking" then
