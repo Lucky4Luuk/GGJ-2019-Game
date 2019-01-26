@@ -6,6 +6,11 @@ local m = map:new()
 local total_time = 0
 local fixed_delta_time = 1/240
 
+function love.load()
+  --Generate map
+  map:load("yeet")
+end
+
 function love.update(dt)
   total_time = total_time + dt
   while fixed_delta_time > total_time do
