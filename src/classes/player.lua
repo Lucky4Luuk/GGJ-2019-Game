@@ -9,7 +9,7 @@ function player:new(x,y)
   body:setFixedRotation(true)
   local shape = love.physics.newRectangleShape(-5, 0, 16, 16)
   local fixture = love.physics.newFixture(body, shape, 1)
-  local p = {w=8, h=8, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=15000, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
+  local p = {w=8, h=8, isDead=false, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=15000, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
 
   p.sprites.walking_source = love.graphics.newImage("assets/bit_walking.png")
   for i=0, 7 do
@@ -106,11 +106,14 @@ function player.moveRight(self, dt, map)
     if vx == 0 then
       for i=1, #map.tubes do
         local tube = map.tubes[i]
-        local distX = math.abs(self.body:getX() - tube.x)
-        local distY = math.abs(self.body:getY() - tube.y)
-        print(distX, distY)
-        if distX < 16.0 and distY < 32.0 and tube.x > self.body:getX() then
-          --print("yeet")
+        --local distX = math.abs(self.body:getX() - tube.x)
+        --local distY = math.abs(self.body:getY() - tube.y)
+        --print(distX, distY)
+        --if distX < 16.0 and distY < 32.0 and tube.x > self.body:getX() then
+        --  --print("yeet")
+        --  self:enter_tube(tube)
+        --end
+        if self.body:isTouching(tube.body) and tube.x > self.body:getX() then
           self:enter_tube(tube)
         end
       end

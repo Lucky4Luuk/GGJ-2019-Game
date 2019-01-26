@@ -84,7 +84,7 @@ function map.load_map(self, path)
     local hasCol = true
     local isTubeEntrance = false
     local tubeLayerIndex = -1
-    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" then
       hasCol = false
     end
     if data.layers[l].name == "TubeEntrance" then
@@ -107,6 +107,12 @@ function map.load_map(self, path)
         if isTubeEntrance then
           print(tiles[i])
           local tube = self:pipeFindChild(i, data.layers[l].width, data.layers[l].height, cur_tile.w, cur_tile.h, tiles[i], 0)
+          local body = love.physics.newBody(world, x+cur_tile.w/2, y+cur_tile.h/2, "static")
+          local shape = love.physics.newRectangleShape(cur_tile.w, cur_tile.h)
+          local fixture = love.physics.newFixture(body, shape, 1)
+          tube.body = body
+          tube.shape = shape
+          tube.fixture = fixture
           table.insert(self.tubes, tube)
         else
           love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
