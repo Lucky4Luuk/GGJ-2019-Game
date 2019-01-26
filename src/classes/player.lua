@@ -23,6 +23,10 @@ function player:new(x,y)
     table.insert(p.sprites.idle, quad)
   end
 
+  p.sprites.in_pipe = love.graphics.newImage("assets/boop_pipe.png")
+
+  p.pipe_timer = 0
+
   --Metatable stuff
   return setmetatable(p, player_meta)
 end
@@ -77,9 +81,15 @@ function player.update(self, dt, map)
   end
 
   if self.inTube then
-    if self.tube.child then
-      self:enter_tube(self.tube.child)
+    if self.pipe_timer > 0.05 then
+      if self.tube.child then
+        self:enter_tube(self.tube.child)
+      end
+      self.pipe_timer = self.pipe_timer - 0.05
     end
+    self.pipe_timer = self.pipe_timer + dt
+  else
+    self.pipe_timer = 0
   end
 
   for i=1, #map.spikes do
@@ -157,7 +167,9 @@ function player.draw(self)
   --love.graphics.points(self.body:getX(), self.body:getY())
   --love.graphics.line(self.body:getX()-self.w, self.body:getY()+self.h, self.body:getX()+self.w, self.body:getY()+self.h)
   love.graphics.setColor(1,1,1,1)
-  if self.anim == "idle" then
+  if self.inTube then
+    love.graphics.draw(self.sprites.in_pipe, self.body:getX() - 7, self.body:getY() - 24)
+  elseif self.anim == "idle" then
     love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "walking" then
     love.graphics.draw(self.sprites.walking_source, self.sprites.walking[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
