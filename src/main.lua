@@ -9,7 +9,7 @@ local state = "platforming"
 love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
 local m = map:new()
-local p = player:new(48, 112)
+local p = player:new(15*32, 16*32)
 
 local cam = {pos = {x = 0, y = 0}}
 
@@ -20,7 +20,7 @@ local fixed_delta_time = 1/240
 function love.load()
   --Generate map
   --map:load_tileset("yeetyeet")
-  m:load_map("512x512")
+  m:load_map("GameJam_Map3_try_out")
 end
 
 function lerp(a,b,t)
@@ -30,6 +30,7 @@ end
 function love.update(dt)
   --cam.pos.x = p.body:getX() - love.graphics.getWidth()/4
   cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 3.0), 0)
+  cam.pos.y = math.max(lerp(cam.pos.y, p.body:getY() - love.graphics.getHeight()/4, dt * 3.0), 0)
   total_time = total_time + dt
   while total_time > fixed_delta_time do
     fixed_update()

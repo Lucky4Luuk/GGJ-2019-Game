@@ -48,7 +48,7 @@ function map.load_map(self, path)
   end
   for l=1, #data.layers do
     local hasCol = true
-    if data.layers[l].name == "NoCollision" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" then
       hasCol = false
     end
     local tiles = data.layers[l].data
