@@ -3,7 +3,13 @@ local player = require("classes.player")
 
 love.physics.setMeter(32)
 world = love.physics.newWorld(0, 15*32, true)
-
+enemy = {
+  x = 480,
+  y = 480,
+  speed = 100,
+  size = 15,
+  a = 125
+}
 local state = "platforming"
 
 love.graphics.setDefaultFilter("nearest", "nearest", 0)
