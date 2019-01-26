@@ -42,13 +42,13 @@ function fixed_update()
   if state == "platforming" then
     world:update(fixed_delta_time)
 
-    if love.keyboard.isDown("d") then
+    if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
       p:moveRight(fixed_delta_time)
     end
-    if love.keyboard.isDown("a") then
+    if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
       p:moveLeft(fixed_delta_time)
     end
-    if love.keyboard.isDown("w") or love.keyboard.isDown("space") then
+    if love.keyboard.isDown("w") or love.keyboard.isDown("space") or love.keyboard.isDown("up") then
       p:jump(fixed_delta_time)
     end
 
