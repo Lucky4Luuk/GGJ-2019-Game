@@ -9,7 +9,7 @@ local state = "platforming"
 love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
 local m = map:new()
-local p = player:new(15*32, 16*32)
+local p = player:new(16*32, 16*32)
 
 local cam = {pos = {x = 0, y = 0}}
 
@@ -43,10 +43,10 @@ function fixed_update()
     world:update(fixed_delta_time)
 
     if love.keyboard.isDown("d") then
-      p:moveRight(fixed_delta_time)
+      p:moveRight(fixed_delta_time, m)
     end
     if love.keyboard.isDown("a") then
-      p:moveLeft(fixed_delta_time)
+      p:moveLeft(fixed_delta_time, m)
     end
     if love.keyboard.isDown("w") or love.keyboard.isDown("space") then
       p:jump(fixed_delta_time)

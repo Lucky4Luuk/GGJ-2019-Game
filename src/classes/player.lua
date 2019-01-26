@@ -7,9 +7,9 @@ function player:new(x,y)
   --Make player
   local body = love.physics.newBody(world, x, y, "dynamic")
   body:setFixedRotation(true)
-  local shape = love.physics.newRectangleShape(-5, 0, 10, 20)
+  local shape = love.physics.newRectangleShape(-5, 0, 16, 16)
   local fixture = love.physics.newFixture(body, shape, 1)
-  local p = {w=5, h=10, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=12000, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
+  local p = {w=8, h=8, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=15000, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
 
   p.sprites.walking_source = love.graphics.newImage("assets/bit_walking.png")
   for i=0, 7 do
@@ -25,6 +25,12 @@ function player:new(x,y)
 
   --Metatable stuff
   return setmetatable(p, player_meta)
+end
+
+function player.enter_tube(self, tube)
+  self.body:setX(tube.x + 16)
+  self.body:setY(tube.y + 16)
+  self.inTube = true
 end
 
 function player.update(self, dt)
@@ -53,17 +59,29 @@ function player.update(self, dt)
   ]]--
 end
 
-function player.moveRight(self, dt)
-  if self.wallRight == false then
+function player.moveRight(self, dt, map)
+  if self.inTube == false then
     self.body:applyForce(self.speed * dt * 20, 0)
     self.movingRight = true
     if not self.grounded then
       self.anim = "walking"
     end
+
+    local vx, vy = self.body:getLinearVelocity()
+    if vx == 0 then
+      for i=1, #map.tubes do
+        local tube = map.tubes[i]
+        --print(math.abs(self.body:getX() - tube.x))
+        if math.abs(self.body:getX() - tube.x) < 8.0 then
+          --print("yeet")
+          self:enter_tube(tube)
+        end
+      end
+    end
   end
 end
 
-function player.moveLeft(self, dt)
+function player.moveLeft(self, dt, map)
   if self.wallLeft == false then
     self.body:applyForce(-self.speed * dt * 20, 0)
     self.movingRight = false
