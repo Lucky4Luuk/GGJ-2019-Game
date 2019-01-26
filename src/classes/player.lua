@@ -101,17 +101,6 @@ function player.update(self, dt, map)
       self.isDead = true
     end
   end
-  --[[
-  self.x = self.x + self.vel_x * dt
-  self.y = self.y + self.vel_y * dt
-  self.vel_x = self.vel_x - self.drag * dt
-  self.vel_y = self.vel_y - self.drag * dt
-  if self.grounded == false then self:applyForce(0, 9.8) end
-  if self.grounded then self.vel_x = self.vel_x * 0.05 end
-  self.wallRight = false
-  self.wallLeft = false
-  self.grounded = false
-  ]]--
 end
 
 function player.moveRight(self, dt, map)
