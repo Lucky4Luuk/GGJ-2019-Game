@@ -77,7 +77,7 @@ function love.draw()
     end
     ]]--
     love.graphics.pop()
-    love.graphics.print(tostring(p.grounded))
+    --love.graphics.print(tostring(p.grounded))
   elseif state == "jarno" then
     --beun je teken code hier neer
   end

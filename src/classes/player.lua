@@ -81,6 +81,12 @@ function player.update(self, dt, map)
       self:enter_tube(self.tube.child)
     end
   end
+
+  for i=1, #map.spikes do
+    if self.body:isTouching(map.spikes[i].body) and self.body:getY() < map.spikes[i].body:getY() then
+      self.isDead = true
+    end
+  end
   --[[
   self.x = self.x + self.vel_x * dt
   self.y = self.y + self.vel_y * dt
