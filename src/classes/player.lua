@@ -96,6 +96,17 @@ function player.update(self, dt, map)
     self.pipe_timer = 0
   end
 
+  for i=1, #map.enemies do
+    if self.body:isTouching(map.enemies[i].body) then
+      if self.body:getY() < map.enemies[i].body:getY() then
+        --huej beunen je bent nog in leven
+      else
+        --nie beunen
+        self.isDead = true
+      end
+    end
+  end
+
   for i=1, #map.spikes do
     if self.body:isTouching(map.spikes[i].body) then
       self.isDead = true
