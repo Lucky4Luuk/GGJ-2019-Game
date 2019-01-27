@@ -54,6 +54,9 @@ function fixed_update()
     end
 
     p:update(fixed_delta_time, m)
+    for i=1, #m.enemies do
+      m.enemies[i]:update(fixed_delta_time, m)
+    end
   elseif state == "jarno" then
     --beun je update code hier neer
   end

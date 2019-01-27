@@ -42,6 +42,20 @@ function enemy.update(self, dt, map)
     self.frame_counter = self.frame_counter % #self.sprites.walking
   end
 
+  if self.movingRight then
+    self:moveRight(dt)
+    if vx == 0 then
+      self.movingRight = false
+      self:moveLeft(dt)
+      self:moveLeft(dt)
+    end
+  else
+    self:moveLeft(dt)
+    if vx == 0 then
+      self.movingRight = true
+      self:moveRight(dt)
+      self:moveRight(dt)
+    end
   for i=1, #map.spikes do
     if self.body:isTouching(map.spikes[i].body) and self.body:getY() < map.spikes[i].body:getY() then
       self.isDead = true
@@ -49,14 +63,14 @@ function enemy.update(self, dt, map)
   end
 end
 
-function enemy.moveRight(self, dt, map)
+function enemy.moveRight(self, dt)
   self.body:applyForce(self.speed * dt * 20, 0)
   if not self.grounded then
     self.anim = "walking"
   end
 end
 
-function enemy.moveLeft(self, dt, map)
+function enemy.moveLeft(self, dt)
   self.body:applyForce(-self.speed * dt * 20, 0)
   if not self.grounded then
     self.anim = "walking"
