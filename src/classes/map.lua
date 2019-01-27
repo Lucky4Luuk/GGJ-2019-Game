@@ -115,8 +115,8 @@ function map.load_map(self, path)
           table.insert(self.victory_tiles, {x=x+16, y=y+16})
         elseif data.layers[l].name == "Enemies" then
           if tiles[i] == 249 then
-            --Octo
-            
+            --fuckin octo lookin ass
+            table.insert(self.enemies, enemy:new(x,y, "octo"))
           end
         end
         if isTubeEntrance then
