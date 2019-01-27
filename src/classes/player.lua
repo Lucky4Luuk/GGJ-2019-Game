@@ -116,11 +116,14 @@ function player.update(self, dt, map)
   for i=1, #map.victory_tiles do
     local x = self.body:getX()
     local y = self.body:getY()
-    local tx = map.victory_tiles[i].x
-    local ty = map.victory_tiles[i].y
-    if x+16 > tx-16 and x-16 < tx+16 then
-      if y+16 > ty-16 and y-16 < ty+16 then
-        self.victory = true
+    if map.victory_tiles[i] then
+      local tx = map.victory_tiles[i].x
+      local ty = map.victory_tiles[i].y
+      if x+16 > tx-16 and x-16 < tx+16 then
+        if y+16 > ty-16 and y-16 < ty+16 then
+          table.remove(map.victory_tiles, i)
+          self.victory = true
+        end
       end
     end
   end
@@ -137,6 +140,7 @@ function player.update(self, dt, map)
       self.spawn_x = 19*32
       self.spawn_y = 53*32
     end
+    self.victory = false
   end
 
   if self.isDead then
