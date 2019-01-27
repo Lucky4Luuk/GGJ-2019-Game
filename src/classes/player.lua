@@ -131,7 +131,7 @@ function player.update(self, dt, map)
 end
 
 function player.death (self)
-  self.body:setPosition(2*32,8*32)
+  self.body:setPosition(self.spawn_x, self.spawn_y)
   self.isDead = false
 end
 

@@ -21,7 +21,9 @@ function love.load()
   --Generate map
   --map:load_tileset("yeetyeet")
   m:load_map("yaesteas")
-  --p.body:setPosition(m.spawn_x, m.spawn_y)
+  p.spawn_x = 2*32
+  p.spawn_y = 8*32
+  p.body:setPosition(p.spawn_x, p.spawn_y)
 end
 
 function lerp(a,b,t)
