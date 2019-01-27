@@ -23,6 +23,12 @@ function player:new(x,y)
     table.insert(p.sprites.idle, quad)
   end
 
+  p.sprites.death = love.graphics.newImage("assets/boop_death.png")
+  for i=0, 6 do
+    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 320, 32)
+    table.insert(p.sprites.death, quad)
+  end
+
   p.sprites.in_pipe = love.graphics.newImage("assets/boop_pipe.png")
 
   p.pipe_timer = 0
@@ -116,11 +122,14 @@ function player.update(self, dt, map)
   for i=1, #map.victory_tiles do
     local x = self.body:getX()
     local y = self.body:getY()
-    local tx = map.victory_tiles[i].x
-    local ty = map.victory_tiles[i].y
-    if x+16 > tx-16 and x-16 < tx+16 then
-      if y+16 > ty-16 and y-16 < ty+16 then
-        self.victory = true
+    if map.victory_tiles[i] then
+      local tx = map.victory_tiles[i].x
+      local ty = map.victory_tiles[i].y
+      if x+16 > tx-16 and x-16 < tx+16 then
+        if y+16 > ty-16 and y-16 < ty+16 then
+          table.remove(map.victory_tiles, i)
+          self.victory = true
+        end
       end
     end
   end
@@ -133,7 +142,11 @@ function player.update(self, dt, map)
     elseif self.level == 3 then
       self.spawn_x = 50*32
       self.spawn_y = 33*32
+    elseif self.level == 4 then
+      self.spawn_x = 19*32
+      self.spawn_y = 53*32
     end
+    self.victory = false
   end
 
   if self.isDead then
