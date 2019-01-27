@@ -1,11 +1,12 @@
 local map = {_TYPE='module', _NAME='map', _VERSION='0.1'}
 local map_meta = {}
+local enemy = require("classes.enemy")
 
 local tiled_loader = require("tiled_loader")
 
 function map:new()
   --Make map
-  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, spikes={}, victory_tiles={}, type="map"}
+  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, spikes={}, victory_tiles={}, enemies={}, type="map"}
 
   --Metatable stuff
   return setmetatable(m, map_meta)
