@@ -125,13 +125,24 @@ function player.update(self, dt, map)
     end
   end
 
+  if self.victory then
+    self.level = self.level + 1
+    if self.level == 2 then
+      self.spawn_x = 20*32
+      self.spawn_y = 25*32
+    elseif self.level == 3 then
+      self.spawn_x = 50*32
+      self.spawn_y = 33*32
+    end
+  end
+
   if self.isDead then
     self:death()
   end
 end
 
 function player.death (self)
-  self.body:setPosition(2*32,8*32)
+  self.body:setPosition(self.spawn_x, self.spawn_y)
   self.isDead = false
 end
 
