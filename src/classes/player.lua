@@ -127,8 +127,8 @@ function player.update(self, dt, map)
 end
 
 function player.death (self)
-  if self.isDead then
-    setPosition(2*32,2*32)
+  if self.isDead == true then
+    self:setPosition(2*32,2*32)
   end
 end
 
