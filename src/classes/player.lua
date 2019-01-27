@@ -23,6 +23,12 @@ function player:new(x,y)
     table.insert(p.sprites.idle, quad)
   end
 
+  p.sprites.death = love.graphics.newImage("assets/boop_death.png")
+  for i=0, 6 do
+    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 320, 32)
+    table.insert(p.sprites.death, quad)
+  end
+
   p.sprites.in_pipe = love.graphics.newImage("assets/boop_pipe.png")
 
   p.pipe_timer = 0
