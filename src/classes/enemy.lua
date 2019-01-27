@@ -56,6 +56,8 @@ function enemy.update(self, dt, map)
       self:moveRight(dt)
       self:moveRight(dt)
     end
+  end
+
   for i=1, #map.spikes do
     if self.body:isTouching(map.spikes[i].body) and self.body:getY() < map.spikes[i].body:getY() then
       self.isDead = true
