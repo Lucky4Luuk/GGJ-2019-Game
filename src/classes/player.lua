@@ -115,6 +115,12 @@ function player.update(self, dt, map)
   end
 end
 
+function player.death (self)
+  if self.isDead then
+    setPosition(2*32,2*32)
+  end
+end
+
 function player.moveRight(self, dt, map)
   if self.inTube == false then
     self.body:applyForce(self.speed * dt * 20, 0)
