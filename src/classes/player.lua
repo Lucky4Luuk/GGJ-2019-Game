@@ -113,12 +113,15 @@ function player.update(self, dt, map)
       end
     end
   end
+
+  if self.isDead then
+    self:death()
+  end
 end
 
 function player.death (self)
-  if self.isDead == true then
-    self:setPosition(2*32,2*32)
-  end
+  self.body:setPosition(2*32,8*32)
+  self.isDead = false
 end
 
 function player.moveRight(self, dt, map)
