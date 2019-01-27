@@ -86,7 +86,7 @@ function map.load_map(self, path)
     local isSpikes = false
     local isTubeEntrance = false
     local tubeLayerIndex = -1
-    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" or data.layers[l].name == "Victory" or data.layers[l].name == "Spawn" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" or data.layers[l].name == "Victory" or data.layers[l].name == "Spawn" or data.layers[l].name == "Enemies" then
       hasCol = false
     end
     if data.layers[l].name == "TubeEntrance" then
@@ -113,6 +113,10 @@ function map.load_map(self, path)
           self.spawn_y = math.floor(i/data.layers[l].width)*cur_tile.w
         elseif data.layers[l].name == "Victory" then
           table.insert(self.victory_tiles, {x=x+16, y=y+16})
+        elseif data.layers[l].name == "Enemies" then
+          if tiles[i] == 249 then
+            --Octo
+          end
         end
         if isTubeEntrance then
           --print(tiles[i])
