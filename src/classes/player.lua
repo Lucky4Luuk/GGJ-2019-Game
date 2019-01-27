@@ -9,7 +9,7 @@ function player:new(x,y)
   body:setFixedRotation(true)
   local shape = love.physics.newRectangleShape(-5, 0, 16, 16)
   local fixture = love.physics.newFixture(body, shape, 1)
-  local p = {w=8, h=8, isDead=false, victory=false, bossfight=false, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=15000, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
+  local p = {w=8, h=8, isDead=false, victory=false, bossfight=false, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=16000, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
 
   p.sprites.walking_source = love.graphics.newImage("assets/bit_walking.png")
   for i=0, 7 do
@@ -107,8 +107,8 @@ function player.update(self, dt, map)
     local y = self.body:getY()
     local tx = map.victory_tiles[i].x
     local ty = map.victory_tiles[i].y
-    if x+16  then
-      if math.abs(self.body:getY() - map.victory_tiles[i].y) < 16 then
+    if x+16 > tx-16 and x-16 < tx+16 then
+      if y+16 > ty-16 and y-16 < ty+16 then
         self.victory = true
       end
     end

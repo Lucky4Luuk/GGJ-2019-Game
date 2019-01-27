@@ -110,6 +110,8 @@ function map.load_map(self, path)
         if data.layers[l].name == "Spawn" then
           self.spawn_x = (i%data.layers[l].height - 1)*cur_tile.h
           self.spawn_y = math.floor(i/data.layers[l].width)*cur_tile.w
+        elseif data.layers[l].name == "Victory" then
+          table.insert(self.victory_tiles, {x=x+16, y=y+16})
         end
         if isTubeEntrance then
           --print(tiles[i])

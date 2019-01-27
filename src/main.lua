@@ -30,8 +30,8 @@ end
 
 function love.update(dt)
   --cam.pos.x = p.body:getX() - love.graphics.getWidth()/4
-  cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 3.0), 0)
-  cam.pos.y = math.max(lerp(cam.pos.y, p.body:getY() - love.graphics.getHeight()/4, dt * 3.0), 0)
+  cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 4.0), 0)
+  cam.pos.y = math.max(lerp(cam.pos.y, p.body:getY() - love.graphics.getHeight()/4, dt * 4.0), 0)
   total_time = total_time + dt
   while total_time > fixed_delta_time do
     fixed_update()
@@ -67,6 +67,7 @@ function love.draw()
     love.graphics.translate(-cam.pos.x, -cam.pos.y)
     love.graphics.draw(m.canvas)
     p:draw()
+    --[[
     for i=1, #m.colliders do
       local c = m.colliders[i]
       --love.graphics.line(c.x - c.w, c.y - c.h, c.x + c.w, c.y - c.h)
@@ -75,6 +76,7 @@ function love.draw()
       --love.graphics.line(c.x - c.w, c.y + c.h, c.x + c.w, c.y + c.h)
       love.graphics.polygon("line", c.body:getWorldPoints(c.shape:getPoints()))
     end
+    --]]
     love.graphics.pop()
     --love.graphics.print(tostring(p.grounded))
     love.graphics.print(tostring(p.victory))
