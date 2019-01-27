@@ -4,7 +4,18 @@ local player = require("classes.player")
 love.physics.setMeter(32)
 world = love.physics.newWorld(0, 15*32, true)
 
-local state = "platforming"
+local state = "intro1"
+local intro_frame = 1
+local intro1 = love.graphics.newImage("assets/start1.png") --512x288
+local intro1_quads = {}
+for i=0, 28 do
+  table.insert(intro1_quads, love.graphics.newQuad(i*512, 0, 512, 288, 29*512, 288))
+end
+local intro2 = love.graphics.newImage("assets/start2.png")
+local intro2_quads = {}
+for i=0, 60 do
+  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 29*512, 288))
+end
 
 love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
@@ -33,8 +44,10 @@ end
 
 function love.update(dt)
   --cam.pos.x = p.body:getX() - love.graphics.getWidth()/4
-  cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 3.0), 0)
-  cam.pos.y = math.max(lerp(cam.pos.y, p.body:getY() - love.graphics.getHeight()/4, dt * 3.0), 0)
+  if state == "platforming" then
+    cam.pos.x = math.max(lerp(cam.pos.x, p.body:getX() - love.graphics.getWidth()/4, dt * 3.0), 0)
+    cam.pos.y = math.max(lerp(cam.pos.y, p.body:getY() - love.graphics.getHeight()/4, dt * 3.0), 0)
+  end
   total_time = total_time + dt
   while total_time > fixed_delta_time do
     fixed_update()
@@ -43,7 +56,10 @@ function love.update(dt)
 end
 
 function fixed_update()
-  if state == "platforming" then
+  if state == "intro1" then
+    intro_frame = intro_frame + fixed_delta_time * 2
+    
+  elseif state == "platforming" then
     world:update(fixed_delta_time)
 
     if love.keyboard.isDown("d") then
