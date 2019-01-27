@@ -5,7 +5,7 @@ local tiled_loader = require("tiled_loader")
 
 function map:new()
   --Make map
-  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, spikes={}, type="map"}
+  local m = {canvas=nil, tiles={}, tileimages={}, colliders={}, tubes={}, spikes={}, victory_tiles={}, type="map"}
 
   --Metatable stuff
   return setmetatable(m, map_meta)
@@ -85,7 +85,7 @@ function map.load_map(self, path)
     local isSpikes = false
     local isTubeEntrance = false
     local tubeLayerIndex = -1
-    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" or data.layers[l].name == "Victory" or data.layers[l].name == "Spawn" then
       hasCol = false
     end
     if data.layers[l].name == "TubeEntrance" then
@@ -96,8 +96,7 @@ function map.load_map(self, path)
         end
       end
       self.tubeTiles = data.layers[tubeLayerIndex].data
-    end
-    if data.layers[l].name == "Spikes" then
+    elseif data.layers[l].name == "Spikes" then
       isSpikes = true
     end
     local tiles = data.layers[l].data
@@ -108,8 +107,12 @@ function map.load_map(self, path)
         local cur_tile = self.tiles[tiles[i]]
         local x = (i%data.layers[l].height - 1)*cur_tile.h
         local y = math.floor(i/data.layers[l].width)*cur_tile.w
+        if data.layers[l].name == "Spawn" then
+          self.spawn_x = (i%data.layers[l].height - 1)*cur_tile.h
+          self.spawn_y = math.floor(i/data.layers[l].width)*cur_tile.w
+        end
         if isTubeEntrance then
-          print(tiles[i])
+          --print(tiles[i])
           local tube = self:pipeFindChild(i, data.layers[l].width, data.layers[l].height, cur_tile.w, cur_tile.h, tiles[i], 0)
           local body = love.physics.newBody(world, x+cur_tile.w/2, y+cur_tile.h/2, "static")
           local shape = love.physics.newRectangleShape(cur_tile.w, cur_tile.h)
