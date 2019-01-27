@@ -7,7 +7,7 @@ world = love.physics.newWorld(0, 15*32, true)
 love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
 local state = "intro1"
-local intro_frame = 1
+local intro_frame = 0
 local intro1 = love.graphics.newImage("assets/start1.png") --512x288
 local intro1_quads = {}
 for i=0, 28 do
@@ -20,16 +20,16 @@ for i=0, 22 do
   table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 23*512, 288))
 end
 
-local intro3 = love.graphics.newImage("assets/start2.5.png")
+local intro3 = love.graphics.newImage("assets/start2.2.png")
 local intro3_quads = {}
-for i=0, 17 do
-  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 18*512, 288))
+for i=0, 22 do
+  table.insert(intro3_quads, love.graphics.newQuad(i*512, 0, 512, 288, 23*512, 288))
 end
 
-local intro4 = love.graphics.newImage("assets/start3.png")
+local intro4 = love.graphics.newImage("assets/start2.3.png")
 local intro4_quads = {}
-for i=0, 17 do
-  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 18*512, 288))
+for i=0, 14 do
+  table.insert(intro4_quads, love.graphics.newQuad(i*512, 0, 512, 288, 15*512, 288))
 end
 
 local m = map:new()
@@ -76,14 +76,28 @@ function fixed_update()
     end
     intro_frame = intro_frame + fixed_delta_time * speed
     if math.floor(intro_frame)+1 == #intro1_quads then
-      intro_frame = 1
+      intro_frame = 0
       state = "intro2"
     end
   elseif state == "intro2" then
     local speed = 8
     intro_frame = intro_frame + fixed_delta_time * speed
     if math.floor(intro_frame)+1 == #intro2_quads then
-      intro_frame = 1
+      intro_frame = 0
+      state = "intro3"
+    end
+  elseif state == "intro3" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro3_quads then
+      intro_frame = 0
+      state = "intro4"
+    end
+  elseif state == "intro4" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro4_quads then
+      intro_frame = 0
       state = "platforming"
     end
   elseif state == "platforming" then
@@ -111,10 +125,16 @@ end
 function love.draw()
   if state == "intro1" then
     local q = math.floor(intro_frame)+1
-    love.graphics.draw(intro1, intro1_quads[q])
+    love.graphics.draw(intro1, intro1_quads[q], 0,0)
   elseif state == "intro2" then
     local q = math.floor(intro_frame)+1
-    love.graphics.draw(intro2, intro2_quads[q])
+    love.graphics.draw(intro2, intro2_quads[q], 0,0)
+  elseif state == "intro3" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro3, intro3_quads[q], 0,0)
+  elseif state == "intro4" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro4, intro4_quads[q], 0,0)
   elseif state == "platforming" then
     love.graphics.setColor(1,1,1,1)
     love.graphics.push()
@@ -129,5 +149,6 @@ function love.draw()
   elseif state == "jarno" then
     --beun je teken code hier neer
   end
-  love.graphics.print(tostring(math.floor(intro_frame)+1))
+  --love.graphics.print(tostring(math.floor(intro_frame)+1))
+  love.graphics.print(state)
 end
