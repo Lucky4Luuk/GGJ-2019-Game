@@ -97,7 +97,7 @@ function player.update(self, dt, map)
   end
 
   for i=1, #map.spikes do
-    if self.body:isTouching(map.spikes[i].body) and self.body:getY() < map.spikes[i].body:getY() then
+    if self.body:isTouching(map.spikes[i].body) then
       self.isDead = true
     end
   end
