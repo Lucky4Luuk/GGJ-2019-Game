@@ -116,6 +116,7 @@ function map.load_map(self, path)
         elseif data.layers[l].name == "Enemies" then
           if tiles[i] == 249 then
             --Octo
+            
           end
         end
         if isTubeEntrance then
