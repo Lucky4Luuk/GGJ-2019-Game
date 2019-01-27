@@ -12,8 +12,8 @@ function enemy:new(x,y, type)
   local e = {w=8, h=8, isDead=false, body=body, shape=shape, fixture=fixture, speed=150, grounded=false, wallRight=false, wallLeft=false, type="enemy", sprites={death={}, walking={}, walking_source=nil, death_source=nil, walking_speed=10, death_speed=1}, frame_counter=0, anim="walking", movingRight}
 
   e.sprites.walking_source = love.graphics.newImage("assets/enemies/"..tostring(type).."_walking.png")
-  for i=0, 3 do
-    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 128, 32)
+  for i=0, 1 do
+    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 64, 32)
     table.insert(e.sprites.walking, quad)
   end
 
