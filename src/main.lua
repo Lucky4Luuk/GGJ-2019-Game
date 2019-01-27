@@ -67,16 +67,9 @@ function love.draw()
     love.graphics.translate(-cam.pos.x, -cam.pos.y)
     love.graphics.draw(m.canvas)
     p:draw()
-    --[[
-    for i=1, #m.colliders do
-      local c = m.colliders[i]
-      --love.graphics.line(c.x - c.w, c.y - c.h, c.x + c.w, c.y - c.h)
-      --love.graphics.line(c.x - c.w, c.y + c.h, c.x - c.w, c.y - c.h)
-      --love.graphics.line(c.x + c.w, c.y + c.h, c.x + c.w, c.y - c.h)
-      --love.graphics.line(c.x - c.w, c.y + c.h, c.x + c.w, c.y + c.h)
-      love.graphics.polygon("line", c.body:getWorldPoints(c.shape:getPoints()))
+    for i=1, #m.enemies do
+      m.enemies[i]:draw()
     end
-    ]]--
     love.graphics.pop()
     --love.graphics.print(tostring(p.grounded))
     love.graphics.print(tostring(p.victory))

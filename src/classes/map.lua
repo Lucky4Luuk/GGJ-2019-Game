@@ -130,7 +130,9 @@ function map.load_map(self, path)
           tube.fixture = fixture
           table.insert(self.tubes, tube)
         else
-          love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
+          if data.layers[l].name ~= "Enemies" then
+            love.graphics.draw(self.tileimages[cur_tile.source], cur_tile.quad, x, y)
+          end
           if hasCol then
             --table.insert(self.colliders, {x=x+cur_tile.w,y=y+cur_tile.h/2, w=1, h=cur_tile.h/2, nx=-1, ny=0})
             --table.insert(self.colliders, {x=x,y=y+cur_tile.h, w=1, h=cur_tile.h/2, nx=1, ny=0})
