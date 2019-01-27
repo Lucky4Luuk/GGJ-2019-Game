@@ -73,7 +73,7 @@ function map.pipeFindChild(self, i, w,h, cw,ch, prev_dir, prev_id, id)
   return tube
 end
 
-function map.load_map(self, path)
+function map.load_map(self, path, p)
   --local data = tiled_loader.load_json("assets/"..path..".json")
   local data = require("assets."..path)
   self.canvas = love.graphics.newCanvas(data.width * data.tilewidth, data.height * data.tileheight)
@@ -86,7 +86,7 @@ function map.load_map(self, path)
     local isSpikes = false
     local isTubeEntrance = false
     local tubeLayerIndex = -1
-    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" or data.layers[l].name == "Victory" or data.layers[l].name == "Spawn" or data.layers[l].name == "Enemies" then
+    if data.layers[l].name == "NoCollision" or data.layers[l].name == "Foreground" or data.layers[l].name == "Tubes" or data.layers[l].name == "Spikes" or data.layers[l].name == "Victory" or data.layers[l].name == "Spawn" or data.layers[l].name == "Enemies" or data.layers[l].name == "Boss" then
       hasCol = false
     end
     if data.layers[l].name == "TubeEntrance" then
@@ -117,6 +117,10 @@ function map.load_map(self, path)
           if tiles[i] == 249 then
             --fuckin octo lookin ass
             table.insert(self.enemies, enemy:new(x,y, "octo"))
+          end
+        elseif data.layers[l].name == "Boss" then
+          if tiles[i] == 256 then
+            table.insert(self.enemies, enemy:new(x,y, "boss2", true, p))
           end
         end
         if isTubeEntrance then

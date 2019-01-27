@@ -45,9 +45,9 @@ function love.load()
   --Generate map
   --map:load_tileset("yeetyeet")
   m:load_map("yaesteas")
-  p.spawn_x = 2*32
-  p.spawn_y = 8*32
-  p.level = 1
+  p.spawn_x = 50*32 --2*32
+  p.spawn_y = 33*32 --8*32
+  p.level = 3
   p.body:setPosition(p.spawn_x, p.spawn_y)
 end
 
