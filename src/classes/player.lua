@@ -133,6 +133,9 @@ function player.update(self, dt, map)
     elseif self.level == 3 then
       self.spawn_x = 50*32
       self.spawn_y = 33*32
+    elseif self.level == 4 then
+      self.spawn_x = 19*32
+      self.spawn_y = 53*32
     end
   end
 
