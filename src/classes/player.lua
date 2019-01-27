@@ -9,12 +9,12 @@ function player:new(x,y)
   body:setFixedRotation(true)
   local shape = love.physics.newRectangleShape(-5, 0, 16, 16)
   local fixture = love.physics.newFixture(body, shape, 1)
-  local p = {w=8, h=8, isDead=false, victory=false, bossfight=false, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=16500, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, walking_source=nil, idle_source=nil, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
+  local p = {w=8, h=8, isDead=false, victory=false, bossfight=false, body=body, shape=shape, fixture=fixture, speed=500, jumpForce=16500, inTube=false, grounded=false, wallRight=false, wallLeft=false, type="player", sprites={idle={}, walking={}, death={}, walking_source=nil, idle_source=nil, death_source=nil, death_speed=5, walking_speed=10, idle_speed=1}, frame_counter=0, anim="idle", movingRight}
 
   p.sprites.walking_source = love.graphics.newImage("assets/bit_walking.png")
   for i=0, 7 do
     local quad = love.graphics.newQuad(i*32, 0, 32, 32, 320, 32)
-    table.insert(p.sprites.walking, quad) 
+    table.insert(p.sprites.walking, quad)
   end
 
   p.sprites.idle_source = love.graphics.newImage("assets/bit_idle.png")
@@ -23,9 +23,9 @@ function player:new(x,y)
     table.insert(p.sprites.idle, quad)
   end
 
-  p.sprites.death = love.graphics.newImage("assets/boop_death.png")
-  for i=0, 6 do
-    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 320, 32)
+  p.sprites.death_source = love.graphics.newImage("assets/boop_death.png")
+  for i=0, 4 do
+    local quad = love.graphics.newQuad(i*32, 0, 32, 32, 5*32, 32)
     table.insert(p.sprites.death, quad)
   end
 
@@ -79,10 +79,17 @@ end
 function player.update(self, dt, map)
   local vx, vy = self.body:getLinearVelocity()
   self.body:setLinearVelocity(vx*0.95, vy)
-  if not (love.keyboard.isDown("a") or love.keyboard.isDown("d")) then
+
+  if not (love.keyboard.isDown("a") or love.keyboard.isDown("d")) and self.isDead == false then
     self.anim = "idle"
   end
-  if self.anim == "idle" then
+
+  if self.anim == "death" or self.isDead then
+    --self.isDead = false
+    self.frame_counter = self.frame_counter + dt * self.sprites.death_speed
+    --print(self.frame_counter)
+    --self.frame_counter = self.frame_counter % #self.sprites.death
+  elseif self.anim == "idle" then
     self.frame_counter = self.frame_counter + dt * self.sprites.idle_speed
     self.frame_counter = self.frame_counter % #self.sprites.idle
   elseif self.anim == "walking" then
@@ -102,31 +109,44 @@ function player.update(self, dt, map)
     self.pipe_timer = 0
   end
 
+  if self.isDead then
+    self:death()
+  end
+
   for i=1, #map.enemies do
     if self.body:isTouching(map.enemies[i].body) then
       if self.body:getY() < map.enemies[i].body:getY() then
         --huej beunen je bent nog in leven
-      else
+      elseif self.isDead == false then
         --nie beunen
+        --print("b")
         self.isDead = true
+        self.frame_counter = 0
+        self.anim = "death"
       end
     end
   end
 
   for i=1, #map.spikes do
-    if self.body:isTouching(map.spikes[i].body) then
+    if self.body:isTouching(map.spikes[i].body) and math.sqrt((self.body:getX() - map.spikes[i].body:getX())^2 + (self.body:getY() - map.spikes[i].body:getY())^2) < 32 and self.isDead == false then
+      --print("a")
       self.isDead = true
+      self.frame_counter = 0
+      self.anim = "death"
     end
   end
 
   for i=1, #map.victory_tiles do
     local x = self.body:getX()
     local y = self.body:getY()
-    local tx = map.victory_tiles[i].x
-    local ty = map.victory_tiles[i].y
-    if x+16 > tx-16 and x-16 < tx+16 then
-      if y+16 > ty-16 and y-16 < ty+16 then
-        self.victory = true
+    if map.victory_tiles[i] then
+      local tx = map.victory_tiles[i].x
+      local ty = map.victory_tiles[i].y
+      if x+16 > tx-16 and x-16 < tx+16 then
+        if y+16 > ty-16 and y-16 < ty+16 then
+          self.victory = true
+          table.remove(map.victory_tiles, i)
+        end
       end
     end
   end
@@ -140,16 +160,21 @@ function player.update(self, dt, map)
       self.spawn_x = 50*32
       self.spawn_y = 33*32
     end
-  end
-
-  if self.isDead then
-    self:death()
+    self.victory = false
   end
 end
 
 function player.death (self)
-  self.body:setPosition(self.spawn_x, self.spawn_y)
-  self.isDead = false
+  if math.floor(self.frame_counter) == #self.sprites.death then
+    self.isDead = false
+    self.anim = "idle"
+    self.frame_counter = 0
+    self.grounded = false
+    self.wallRight = false
+    self.wallleft = false
+    self.body:setPosition(self.spawn_x, self.spawn_y)
+    --print("k")
+  end
 end
 
 function player.moveRight(self, dt, map)
@@ -194,7 +219,7 @@ end
 
 function player.jump(self, dt)
   local vx, vy = self.body:getLinearVelocity()
-  if vy == 0 then
+  if vy == 0 and self.isDead == false then
     self.body:applyForce(0, -self.jumpForce * dt * 15)
     self.grounded = false
   end
@@ -204,6 +229,8 @@ function player.draw(self)
   love.graphics.setColor(1,1,1,1)
   if self.inTube then
     love.graphics.draw(self.sprites.in_pipe, self.body:getX() - 7, self.body:getY() - 20)
+  elseif self.anim == "death" or self.isDead then
+    love.graphics.draw(self.sprites.death_source, self.sprites.death[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "idle" then
     love.graphics.draw(self.sprites.idle_source, self.sprites.idle[math.floor(self.frame_counter)+1], self.body:getX() - 7, self.body:getY() - 24, 0, self.movingRight and 1 or -1, 1, 16, 0, 0, 0)
   elseif self.anim == "walking" then

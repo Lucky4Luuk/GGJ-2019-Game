@@ -78,7 +78,10 @@ function love.draw()
     end
     love.graphics.pop()
     --love.graphics.print(tostring(p.grounded))
-    love.graphics.print(tostring(p.victory))
+    --love.graphics.print(tostring(p.victory))
+    --love.graphics.print(tostring(p.frame_counter))
+    --love.graphics.print(tostring(p.isDead))
+    love.graphics.print(tostring(p.level))
   elseif state == "jarno" then
     --beun je teken code hier neer
   end
