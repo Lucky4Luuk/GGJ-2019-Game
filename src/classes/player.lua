@@ -160,7 +160,7 @@ function player.death (self)
 end
 
 function player.moveRight(self, dt, map)
-  if self.inTube == false then
+  if self.inTube == false and self.isDead == false then
     self.body:applyForce(self.speed * dt * 20, 0)
     self.movingRight = true
     if not self.grounded then
@@ -180,7 +180,7 @@ function player.moveRight(self, dt, map)
 end
 
 function player.moveLeft(self, dt, map)
-  if self.inTube == false then
+  if self.inTube == false and self.isDead == false then
     self.body:applyForce(-self.speed * dt * 20, 0)
     self.movingRight = false
     if not self.grounded then
