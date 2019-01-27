@@ -4,6 +4,8 @@ local player = require("classes.player")
 love.physics.setMeter(32)
 world = love.physics.newWorld(0, 15*32, true)
 
+love.graphics.setDefaultFilter("nearest", "nearest", 0)
+
 local state = "intro1"
 local intro_frame = 1
 local intro1 = love.graphics.newImage("assets/start1.png") --512x288
@@ -11,13 +13,24 @@ local intro1_quads = {}
 for i=0, 28 do
   table.insert(intro1_quads, love.graphics.newQuad(i*512, 0, 512, 288, 29*512, 288))
 end
+
 local intro2 = love.graphics.newImage("assets/start2.png")
 local intro2_quads = {}
-for i=0, 60 do
-  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 29*512, 288))
+for i=0, 22 do
+  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 23*512, 288))
 end
 
-love.graphics.setDefaultFilter("nearest", "nearest", 0)
+local intro3 = love.graphics.newImage("assets/start2.5.png")
+local intro3_quads = {}
+for i=0, 17 do
+  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 18*512, 288))
+end
+
+local intro4 = love.graphics.newImage("assets/start3.png")
+local intro4_quads = {}
+for i=0, 17 do
+  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 18*512, 288))
+end
 
 local m = map:new()
 local p = player:new(2*32, 2*32)
@@ -57,8 +70,22 @@ end
 
 function fixed_update()
   if state == "intro1" then
-    intro_frame = intro_frame + fixed_delta_time * 2
-    
+    local speed = 8
+    if math.floor(intro_frame)+1 == 7 or math.floor(intro_frame)+1 == 13 or math.floor(intro_frame)+1 == 20 then
+      speed = 0.5
+    end
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro1_quads then
+      intro_frame = 1
+      state = "intro2"
+    end
+  elseif state == "intro2" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro2_quads then
+      intro_frame = 1
+      state = "platforming"
+    end
   elseif state == "platforming" then
     world:update(fixed_delta_time)
 
@@ -82,7 +109,13 @@ function fixed_update()
 end
 
 function love.draw()
-  if state == "platforming" then
+  if state == "intro1" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro1, intro1_quads[q])
+  elseif state == "intro2" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro2, intro2_quads[q])
+  elseif state == "platforming" then
     love.graphics.setColor(1,1,1,1)
     love.graphics.push()
     love.graphics.scale(2)
@@ -93,12 +126,8 @@ function love.draw()
       m.enemies[i]:draw()
     end
     love.graphics.pop()
-    --love.graphics.print(tostring(p.grounded))
-    --love.graphics.print(tostring(p.victory))
-    --love.graphics.print(tostring(p.frame_counter))
-    --love.graphics.print(tostring(p.isDead))
-    love.graphics.print(tostring(p.level))
   elseif state == "jarno" then
     --beun je teken code hier neer
   end
+  love.graphics.print(tostring(math.floor(intro_frame)+1))
 end
