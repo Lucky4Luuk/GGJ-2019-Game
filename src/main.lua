@@ -23,6 +23,7 @@ function love.load()
   m:load_map("yaesteas")
   p.spawn_x = 2*32
   p.spawn_y = 8*32
+  p.level = 1
   p.body:setPosition(p.spawn_x, p.spawn_y)
 end
 
