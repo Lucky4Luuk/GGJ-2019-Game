@@ -8,28 +8,46 @@ love.graphics.setDefaultFilter("nearest", "nearest", 0)
 
 local state = "intro1"
 local intro_frame = 0
-local intro1 = love.graphics.newImage("assets/start1.png") --512x288
+local intro1 = love.graphics.newImage("assets/start0.5.png") --512x288
 local intro1_quads = {}
-for i=0, 28 do
-  table.insert(intro1_quads, love.graphics.newQuad(i*512, 0, 512, 288, 29*512, 288))
+for i=0, 12 do
+  table.insert(intro1_quads, love.graphics.newQuad(i*512, 0, 512, 288, 13*512, 288))
 end
 
-local intro2 = love.graphics.newImage("assets/start2.png")
+local intro2 = love.graphics.newImage("assets/start1.png")
 local intro2_quads = {}
-for i=0, 22 do
-  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 23*512, 288))
+for i=0, 15 do
+  table.insert(intro2_quads, love.graphics.newQuad(i*512, 0, 512, 288, 16*512, 288))
 end
 
 local intro3 = love.graphics.newImage("assets/start2.2.png")
 local intro3_quads = {}
-for i=0, 22 do
-  table.insert(intro3_quads, love.graphics.newQuad(i*512, 0, 512, 288, 23*512, 288))
+for i=0, 10 do
+  table.insert(intro3_quads, love.graphics.newQuad(i*512, 0, 512, 288, 11*512, 288))
 end
 
-local intro4 = love.graphics.newImage("assets/start2.3.png")
+local intro4 = love.graphics.newImage("assets/start2.25.png")
 local intro4_quads = {}
-for i=0, 14 do
-  table.insert(intro4_quads, love.graphics.newQuad(i*512, 0, 512, 288, 15*512, 288))
+for i=0, 11 do
+  table.insert(intro4_quads, love.graphics.newQuad(i*512, 0, 512, 288, 12*512, 288))
+end
+
+local intro5 = love.graphics.newImage("assets/start2.25.png")
+local intro5_quads = {}
+for i=0, 11 do
+  table.insert(intro5_quads, love.graphics.newQuad(i*512, 0, 512, 288, 12*512, 288))
+end
+
+local intro6 = love.graphics.newImage("assets/start2.26.png")
+local intro6_quads = {}
+for i=0, 7 do
+  table.insert(intro6_quads, love.graphics.newQuad(i*512, 0, 512, 288, 8*512, 288))
+end
+
+local intro7 = love.graphics.newImage("assets/start2.3.png")
+local intro7_quads = {}
+for i=0, 6 do
+  table.insert(intro7_quads, love.graphics.newQuad(i*512, 0, 512, 288, 7*512, 288))
 end
 
 local m = map:new()
@@ -81,6 +99,9 @@ function fixed_update()
     end
   elseif state == "intro2" then
     local speed = 8
+    if math.floor(intro_frame)+1 == 7 or math.floor(intro_frame)+1 == 13 or math.floor(intro_frame)+1 == 20 then
+      speed = 0.5
+    end
     intro_frame = intro_frame + fixed_delta_time * speed
     if math.floor(intro_frame)+1 == #intro2_quads then
       intro_frame = 0
@@ -97,6 +118,27 @@ function fixed_update()
     local speed = 8
     intro_frame = intro_frame + fixed_delta_time * speed
     if math.floor(intro_frame)+1 == #intro4_quads then
+      intro_frame = 0
+      state = "intro5"
+    end
+  elseif state == "intro5" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro5_quads then
+      intro_frame = 0
+      state = "intro6"
+    end
+  elseif state == "intro6" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro6_quads then
+      intro_frame = 0
+      state = "intro7"
+    end
+  elseif state == "intro7" then
+    local speed = 8
+    intro_frame = intro_frame + fixed_delta_time * speed
+    if math.floor(intro_frame)+1 == #intro7_quads then
       intro_frame = 0
       state = "platforming"
     end
@@ -133,6 +175,15 @@ function love.draw()
     local q = math.floor(intro_frame)+1
     love.graphics.draw(intro3, intro3_quads[q], 0,0)
   elseif state == "intro4" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro4, intro4_quads[q], 0,0)
+  elseif state == "intro5" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro4, intro4_quads[q], 0,0)
+  elseif state == "intro6" then
+    local q = math.floor(intro_frame)+1
+    love.graphics.draw(intro4, intro4_quads[q], 0,0)
+  elseif state == "intro7" then
     local q = math.floor(intro_frame)+1
     love.graphics.draw(intro4, intro4_quads[q], 0,0)
   elseif state == "platforming" then
